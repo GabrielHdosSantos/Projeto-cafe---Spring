@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import project.coffee.app.model.admin.Admin;
 import project.coffee.app.model.customer.Customer;
 import project.coffee.app.model.user.User;
 
@@ -18,7 +19,6 @@ import project.coffee.app.model.user.User;
 public class UserResources {
 
 	private final UserService userService;
-	private HttpSession sessao;
 
 	@Autowired
 	public UserResources(UserService userService) {
@@ -29,12 +29,14 @@ public class UserResources {
 	public ResponseEntity<User> login(@PathVariable("cpf") String cpf) {
 		User user = userService.findUserByCPF(cpf);
 
-		if (user instanceof Customer)
+		if (user instanceof Customer) {
 			System.out.println("top");
-	else {
-			System.out.println("nao e customer");	
-			}
-		
-		return new ResponseEntity<User>(user, HttpStatus.OK);
+			return new ResponseEntity<User>(user, HttpStatus.OK);
+
+		} else if (user instanceof Admin) {
+			System.out.println("admin");
+			return new ResponseEntity<User>(user, HttpStatus.OK);
+		}
+		return null;
 	}
 }
